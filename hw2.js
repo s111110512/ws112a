@@ -27,7 +27,23 @@ router
     })
     .get("/", (context) => {
         context.response.body = "Hello world!";
-      })    
+      })
+    .get("/room/e319/", (context) => {
+        context.response.body =`
+        <html>
+        <body>
+            <p>嵌入式實驗室</p>
+        </body>
+        </html>`
+    })
+    .get("/room/e320/", (context) => {
+        context.response.body =`
+        <html>
+        <body>
+            <p>多媒體教室</p>
+        </body>
+        </html>`
+    })    
 const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
