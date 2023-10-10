@@ -32,22 +32,39 @@ router
       let tel = params['tel']
       console.log(`name=${name} tel=${tel}`)
       if (peoples.get(name)) {
-        ctx.response.body = `<p>"帳號已存在"</p><p><a href="http://127.0.0.1:8000/hw4(add).html">註冊</a></p>`
+        ctx.response.type = 'text/html'
+        ctx.response.body = `<p>帳號已存在</p><p><a href="http://127.0.0.1:8000/public/hw4(add).html">註冊</a></p>`
       } else {
         peoples.set(name, {name, tel})
         ctx.response.type = 'text/html'
-        ctx.response.body = `<p>新增 (${name}, ${tel}) 成功</p><p><a href="/people/">列出所有人員</a></p>`
+        ctx.response.body = `<p>新增成功</p><p><a href="http://127.0.0.1:8000/public/hw4(find).html">登入</a></p>`
       }
   
     }
 
   })
-  .get("/people/find", (ctx) => {
-    let params = ctx.request.url.searchParams    
-    let name = params.get('name')
-    console.log('name=', name)
-    if (peoples.has(name)) {
-      ctx.response.body = peoples.get(name);
+  .post("/people/find", async (ctx) => {
+    const body = ctx.request.body()
+    if (body.type === "form") {
+      const pairs = await body.value
+      console.log('pairs=', pairs)
+      const params = {}
+      for (const [key, value] of pairs) {
+        params[key] = value
+      }
+      console.log('params=', params)
+      let name = params['name']
+      let tel = params['tel']
+      console.log(`name=${name} tel=${tel}`)
+      if (peoples.get(name)&&tel==peoples.get(name).tel) {
+        ctx.response.type = 'text/html'
+        ctx.response.body = "登入成功"
+      } else {
+        peoples.set(name, {name, tel})
+        ctx.response.type = 'text/html'
+        ctx.response.body = `<p>登入失敗</p><p><a href="http://127.0.0.1:8000/public/hw4(find).html">重新登入</a></p>`
+      }
+  
     }
   })
   .get("/public/(.*)", async (ctx) => {
